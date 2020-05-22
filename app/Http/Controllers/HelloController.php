@@ -11,14 +11,7 @@ use Illuminate\Support\Facades\DB;
 class HelloController extends Controller
 {
     public function index(Request $request) {
-        if (isset($request->id)) {
-            $params = [
-                'id' => $request->id
-            ];
-            $items = DB::select('SELECT * FROM people WHERE id = :id', $params);
-        } else {
-            $items = DB::select('SELECT * FROM people');
-        }
+        $items = DB::table('people')->get();
    
         return view('hello.index', [
             'items' => $items,
@@ -89,5 +82,14 @@ class HelloController extends Controller
         DB::DELETE('DELETE FROM people WHERE id = :id', $params);
         
         return redirect('/hello');
+    }
+
+    public function show (Request $request) {
+        $id = $request->id;
+        $item = DB::table('people')->where('id', $id)->first();
+        
+        return view('hello.show', [
+            'item' => $item,
+        ]);
     }
 }
