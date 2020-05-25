@@ -36,7 +36,7 @@ class HelloController extends Controller
             'age' => $request->age,
         ]; 
 
-        DB::insert('INSERT INTO people (name, mail, age) VALUES (:name, :mail, :age)', $params);
+        DB::table('people')->insert($params);
 
         return redirect('/hello');
     }
@@ -45,10 +45,10 @@ class HelloController extends Controller
         $params = [
             'id' => $request->id,
         ];
-        $item = DB::select('SELECT * FROM people WHERE id = :id', $params);
+        $item = DB::table('people')->where('id', $request->id)->first();
         
         return view('hello.edit', [
-            'form' => $item[0],
+            'form' => $item,
         ]);
     }
 
@@ -59,7 +59,7 @@ class HelloController extends Controller
             'mail' => $request->mail,
             'age' => $request->age,
         ];
-        DB::update('UPDATE people SET name = :name, mail = :mail, age = :age WHERE id = :id', $params);
+        DB::table('people')->where('id', $params['id'])->update($params);
         
         return redirect('/hello');
     }
@@ -68,10 +68,10 @@ class HelloController extends Controller
         $params = [
             'id' => $request->id,
         ];
-        $item = DB::select('SELECT * FROM people WHERE id = :id', $params);
+        $item = DB::table('people')->where('id', $params['id'])->first();
         
         return view('hello.del', [
-            'form' => $item[0],
+            'form' => $item,
         ]);
     }
 
@@ -79,7 +79,7 @@ class HelloController extends Controller
         $params = [
             'id' => $request->id
         ];
-        DB::DELETE('DELETE FROM people WHERE id = :id', $params);
+        DB::table('people')->where('id', $params['id'])->delete();
         
         return redirect('/hello');
     }
