@@ -12,10 +12,12 @@ use App\Person;
 class HelloController extends Controller
 {
     public function index(Request $request) {
-        $items = DB::table('people')->orderBy('age', 'asc')->simplePaginate(5);
-   
+        $sort = $request->sort;
+        $items = Person::orderBy($sort, 'asc')->simplePaginate(5);
+
         return view('hello.index', [
             'items' => $items,
+            'sort' => $sort,
         ]);
     }
 
