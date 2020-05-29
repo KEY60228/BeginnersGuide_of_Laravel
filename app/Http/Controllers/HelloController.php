@@ -8,16 +8,19 @@ use App\Http\Requests\HelloRequest;
 use Validator;
 use Illuminate\Support\Facades\DB;
 use App\Person;
+use Illuminate\Support\Facades\Auth;
 
 class HelloController extends Controller
 {
     public function index(Request $request) {
+        $user = Auth::user();
         $sort = $request->sort;
-        $items = Person::orderBy($sort, 'asc')->paginate(5);
+        $items = Person::orderBy($sort, 'asc')->simplePaginate(5);
 
         return view('hello.index', [
             'items' => $items,
             'sort' => $sort,
+            'user' => $user,
         ]);
     }
 
@@ -111,5 +114,28 @@ class HelloController extends Controller
         $msg = $request->input;
         $request->session()->put('msg', $msg);
         return redirect('/hello/session');
+    }
+
+    public function getAuth (Request $request) {
+        return view('hello.auth', [
+            'message' => 'you need signin.'
+        ]);
+    }
+
+    public function postAuth (Request $request) {
+        $email = $request->email;
+        $password = $request->password;
+        $params = [
+            'email' => $email,
+            'password' => $password,
+        ];
+        if (Auth::attempt($params)) {
+            $msg = 'signin. (' . Auth::user()->name . ')';
+        } else {
+            $msg = 'try again.';
+        }
+        return view('hello.auth', [
+            'message' => $msg,
+        ]);
     }
 }

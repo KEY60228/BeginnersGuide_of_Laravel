@@ -29,23 +29,28 @@
 @endsection
 
 @section('content')
-   <table>
+  @if (Auth::check())
+    <p>USER: {{ $user->name . ' (' . $user->email . ')' }}</p>
+  @else
+    <p>ログインしていません(<a href="/login">ログイン</a> | <a href="/register">新規登録</a>)</p>
+  @endif
+  <table>
+    <tr>
+      <th><a href="/hello?sort=id">ID</a></th>
+      <th><a href="/hello?sort=name">name</a></th>
+      <th><a href="/hello?sort=mail">mail</a></th>
+      <th><a href="/hello?sort=age">age</a></th>
+    </tr>
+    @foreach ($items as $item)
       <tr>
-        <th><a href="/hello?sort=id">ID</a></th>
-        <th><a href="/hello?sort=name">name</a></th>
-        <th><a href="/hello?sort=mail">mail</a></th>
-        <th><a href="/hello?sort=age">age</a></th>
+        <td> {{ $item->id }}</td>
+        <td> {{ $item->name }}</td>
+        <td> {{ $item->mail }}</td>
+        <td> {{ $item->age }}</td>
       </tr>
-      @foreach ($items as $item)
-        <tr>
-          <td> {{ $item->id }}</td>
-          <td> {{ $item->name }}</td>
-          <td> {{ $item->mail }}</td>
-          <td> {{ $item->age }}</td>
-        </tr>
-      @endforeach
-   </table>
-   {{ $items->appends(['sort' => $sort])->links() }}
+    @endforeach
+  </table>
+  {{ $items->appends(['sort' => $sort])->links() }}
 @endsection
 
 
