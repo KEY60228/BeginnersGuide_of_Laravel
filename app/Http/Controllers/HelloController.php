@@ -92,4 +92,8 @@ class HelloController extends Controller
             'items' => $items,
         ]);
     }
+
+    public function rest (Request $request) {
+        return view('hello.rest');
+    }
 }
